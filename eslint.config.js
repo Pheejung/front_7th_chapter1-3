@@ -129,4 +129,13 @@ export default [
       },
     },
   },
+
+  // Storybook files configuration
+  {
+    files: ['**/*.stories.{ts,tsx}'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off', // Storybook render 함수에서 Hook 사용 허용
+      'import/no-anonymous-default-export': 'off',
+    },
+  },
 ];
