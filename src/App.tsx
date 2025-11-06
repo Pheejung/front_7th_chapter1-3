@@ -311,6 +311,7 @@ function App() {
                 {weekDates.map((date) => (
                   <TableCell
                     key={date.toISOString()}
+                    data-testid={`calendar-cell-${formatDate(date, date.getDate())}`}
                     sx={{
                       height: '120px',
                       verticalAlign: 'top',
@@ -318,6 +319,13 @@ function App() {
                       padding: 1,
                       border: '1px solid #e0e0e0',
                       overflow: 'hidden',
+                      cursor: 'pointer',
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
+                    onClick={() => {
+                      setDate(formatDate(date, date.getDate()));
                     }}
                   >
                     <Typography variant="body2" fontWeight="bold">
@@ -399,6 +407,7 @@ function App() {
                     return (
                       <TableCell
                         key={dayIndex}
+                        data-testid={day ? `calendar-cell-${dateString}` : undefined}
                         sx={{
                           height: '120px',
                           verticalAlign: 'top',
@@ -407,6 +416,17 @@ function App() {
                           border: '1px solid #e0e0e0',
                           overflow: 'hidden',
                           position: 'relative',
+                          cursor: day ? 'pointer' : 'default',
+                          '&:hover': day
+                            ? {
+                                backgroundColor: '#f5f5f5',
+                              }
+                            : {},
+                        }}
+                        onClick={() => {
+                          if (day) {
+                            setDate(dateString);
+                          }
                         }}
                       >
                         {day && (
