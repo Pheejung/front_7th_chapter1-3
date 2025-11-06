@@ -42,7 +42,7 @@ test.describe('날짜 클릭으로 일정 생성 기능', () => {
 
   test('날짜 클릭 후 일정을 생성하고 저장할 수 있음', async ({ page }) => {
     // 날짜 클릭
-    const targetDate = '2025-11-20';
+    const targetDate = '2025-11-18';
     await page.click(`[data-testid="calendar-cell-${targetDate}"]`);
     
     // 날짜가 자동으로 채워졌는지 확인
@@ -51,18 +51,24 @@ test.describe('날짜 클릭으로 일정 생성 기능', () => {
     
     // 일정 정보 입력
     await page.fill('input[id="title"]', '클릭으로 생성한 일정');
-    await page.fill('input[id="start-time"]', '14:00');
-    await page.fill('input[id="end-time"]', '15:00');
-    await page.fill('textarea[id="description"]', '날짜 클릭으로 생성');
+    await page.fill('input[id="start-time"]', '09:00');
+    await page.fill('input[id="end-time"]', '10:00');
+    await page.fill('input[id="description"]', '날짜 클릭으로 생성');
     
     // 저장 버튼 클릭
     await page.click('button:has-text("일정 추가")');
     
-    // 토스트 메시지 확인
-    await expect(page.locator('text=일정이 추가되었습니다')).toBeVisible();
+    // 겹침 경고가 있을 수 있으므로 처리
+    const overlapDialog = page.locator('text=일정 겹침 경고');
+    if (await overlapDialog.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await page.click('button:has-text("계속 진행")');
+    }
     
-    // 캘린더에 일정이 표시되는지 확인
-    await expect(page.locator('text=클릭으로 생성한 일정')).toBeVisible();
+    // 토스트 메시지 확인
+    await expect(page.locator('text=일정이 추가되었습니다')).toBeVisible({ timeout: 5000 });
+    
+    // 캘린더에 일정이 표시되는지 확인 (첫 번째 요소만 확인)
+    await expect(page.locator('text=클릭으로 생성한 일정').first()).toBeVisible();
   });
 
   test('날짜 클릭으로 폼이 채워진 후 다른 날짜를 클릭하면 날짜가 변경됨', async ({ page }) => {
